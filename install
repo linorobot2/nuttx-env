@@ -1,6 +1,8 @@
 
 #!/usr/bin/env bash
 
+RELEASE=$(lsb_release -c -s)
+
 set -e
 
 cd $HOME
@@ -8,12 +10,16 @@ mkdir nuttx
 cd nuttx
 
 #install nuttx dependencies
-sudo apt-get install gcc-arm-none-eabi
-sudo apt-get install gperf libncurses5-dev flex bison
+sudo apt-get update
+sudo apt-get install -y gcc-arm-none-eabi
+sudo apt-get install -y gperf 
+sudo apt-get install -y libncurses5-dev 
+sudo apt-get install -y flex 
+sudo apt-get install -y bison
 
-#install nuttx and apps
-#git clone https://bitbucket.org/nuttx/nuttx.git nuttx
-#git clone https://bitbucket.org/nuttx/apps.git apps
+#download nuttx and nutxx-apps sources
+#git clone https://bitbucket.org/nuttx/nuttx.git
+#git clone https://bitbucket.org/nuttx/apps.git
 git clone https://github.com/grassjelly/nuttx
 git clone https://github.com/grassjelly/apps
 
@@ -25,32 +31,39 @@ cd kconfig-frontends-4.9.0.0
 make
 sudo make install
 
+#install stlink dependencies
+if [ $RELEASE == "trusty" ]
+    then
+    sudo apt-get -o Dpkg::Options::="--force-overwrite" install gdb-arm-none-eabi
+else
+    sudo apt-get install -y gdb-arm-none-eabi
+fi
 
-#install stlink
+sudo apt-get install -y build-essential
+sudo apt-get install -y cmake
+sudo apt-get install -y libusb-1.0
+sudo apt-get install -y libusb-1.0.0-dev
+sudo apt-get install -y devscripts
+sudo apt-get install -y debhelper
+sudo apt-get install -y libgtk-3-dev
+
+cd ../
 git clone https://github.com/texane/stlink
-
-sudo apt install gdb-arm-none-eabi
-sudo apt-get install build-essential
-sudo apt-get install cmake
-sudo apt-get install libusb-1.0
-sudo apt-get install libusb-1.0.0-dev
-sudo apt-get install devscripts //for debuild
-sudo apt-get install debhelper
-sudo apt-get install libgtk-3-dev
-
 cd stlink
-sudo cp etc/udev/rules.d/*.rules /etc/udev/rules.d/
-
-udevadm control --reload-rules
-udevadm trigger
 
 make release
 make debug
 
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Debug ..
-make
 cd build/Release
 sudo make install
+
+sudo cp -r $HOME/nuttx/stlink/etc/udev/rules.d/*.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
+echo ""
+echo "Setting up of nuttx environment done."
+
+
 
 

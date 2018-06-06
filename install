@@ -69,9 +69,9 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 
 #build nuttx
-cp $DIR/.config $HOME/nuttx/nuttx
 cd $HOME/nuttx/nuttx
 tools/configure.sh stm32f4discovery/usbnsh
+cp $DIR/.config $HOME/nuttx/nuttx
 make
 
 echo ""

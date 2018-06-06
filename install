@@ -3,6 +3,7 @@
 
 set -e
 
+cd $HOME
 mkdir nuttx
 cd nuttx
 

@@ -1,6 +1,7 @@
 
 #!/usr/bin/env bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 RELEASE=$(lsb_release -c -s)
 
 set -e
@@ -31,6 +32,12 @@ cd kconfig-frontends-4.9.0.0
 make
 sudo make install
 
+#install toolchain dependencies
+sudo apt-get install -y expect
+sudo apt-get install -y wget
+sudo apt-get install -y gettext
+sudo apt-get install -y libgmp-dev libmpc-dev libmpfr-dev libisl-dev binutils-dev libelf-dev libexpat-dev
+
 #install stlink dependencies
 if [ $RELEASE == "trusty" ]
     then
@@ -60,6 +67,12 @@ sudo make install
 sudo cp -r $HOME/nuttx/stlink/etc/udev/rules.d/*.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+
+#build nuttx
+cp $DIR/.config $HOME/nuttx/nuttx
+cd $HOME/nuttx/nuttx
+tools/configure.sh stm32f4discovery/usbnsh
+make
 
 echo ""
 echo "Setting up of nuttx environment done."

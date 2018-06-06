@@ -21,8 +21,8 @@ sudo apt-get install -y bison
 #download nuttx and nutxx-apps sources
 #git clone https://bitbucket.org/nuttx/nuttx.git
 #git clone https://bitbucket.org/nuttx/apps.git
-git clone https://github.com/grassjelly/nuttx
-git clone https://github.com/grassjelly/apps
+git clone https://github.com/linorobot2/nuttx
+git clone https://github.com/linorobot2/apps
 
 #install kconfig
 wget -O kconfig http://ymorin.is-a-geek.org/download/kconfig-frontends/kconfig-frontends-4.9.0.0.tar.xz

@@ -1,0 +1,55 @@
+
+#!/usr/bin/env bash
+
+set -e
+
+mkdir nuttx
+cd nuttx
+
+#install nuttx dependencies
+sudo apt-get install gcc-arm-none-eabi
+sudo apt-get install gperf libncurses5-dev flex bison
+
+#install nuttx and apps
+#git clone https://bitbucket.org/nuttx/nuttx.git nuttx
+#git clone https://bitbucket.org/nuttx/apps.git apps
+git clone https://github.com/grassjelly/nuttx
+git clone https://github.com/grassjelly/apps
+
+#install kconfig
+wget -O kconfig http://ymorin.is-a-geek.org/download/kconfig-frontends/kconfig-frontends-4.9.0.0.tar.xz
+tar -xvf kconfig
+cd kconfig-frontends-4.9.0.0
+./configure
+make
+sudo make install
+
+
+#install stlink
+git clone https://github.com/texane/stlink
+
+sudo apt install gdb-arm-none-eabi
+sudo apt-get install build-essential
+sudo apt-get install cmake
+sudo apt-get install libusb-1.0
+sudo apt-get install libusb-1.0.0-dev
+sudo apt-get install devscripts //for debuild
+sudo apt-get install debhelper
+sudo apt-get install libgtk-3-dev
+
+cd stlink
+sudo cp etc/udev/rules.d/*.rules /etc/udev/rules.d/
+
+udevadm control --reload-rules
+udevadm trigger
+
+make release
+make debug
+
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make
+cd build/Release
+sudo make install
+
+

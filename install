@@ -68,6 +68,10 @@ sudo cp -r $HOME/nuttx/stlink/etc/udev/rules.d/*.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
+#clone linorobot2
+cd $HOME/nuttx/apps
+git submodule update --init --recursive
+
 #build nuttx
 cd $HOME/nuttx/nuttx
 tools/configure.sh stm32f4discovery/usbnsh
